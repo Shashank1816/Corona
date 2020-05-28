@@ -1,0 +1,319 @@
+= Effect Corona in India
+
+=== 1) Importing necessary libraries
+
+
++*In[1]:*+
+[source, ipython3]
+----
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+print("imported")
+----
+
+
++*Out[1]:*+
+----
+imported
+----
+
+=== 2) Importing and Reading the dataset
+
+
++*In[73]:*+
+[source, ipython3]
+----
+C_India=pd.read_csv("covid_apr.csv")
+
+----
+
+=== 3) Displaying the Dataset
+
+
++*In[3]:*+
+[source, ipython3]
+----
+C_India
+----
+
+
++*Out[3]:*+
+----
+[cols=",,,,,,",options="header",]
+|===============================================================
+| |State |TCC |Cured |Death |Lat |Long
+|0 |Andaman and Nicobar Islands |11 |10 |0 |12.602822 |92.828847
+|1 |Andhra Pradesh |534 |20 |14 |14.537156 |78.761632
+|2 |Arunachal Pradesh |1 |0 |0 |28.397608 |94.478978
+|3 |Assam |33 |5 |1 |26.354745 |92.825655
+|4 |Bihar |74 |29 |1 |25.679462 |85.609946
+|5 |Chandigarh |21 |7 |0 |30.729350 |76.780504
+|6 |Chhattisgarh |33 |17 |0 |21.839694 |82.320306
+|7 |Delhi |1578 |42 |32 |28.643393 |77.115493
+|8 |Goa |7 |5 |0 |15.363765 |74.053985
+|9 |Gujarat |871 |64 |36 |22.699513 |71.572416
+|10 |Haryana |205 |43 |3 |29.198158 |76.340210
+|11 |Himachal Pradesh |35 |16 |1 |31.926098 |77.244595
+|12 |Jammu and Kashmir |300 |36 |4 |33.645103 |74.858422
+|13 |Jharkhand |28 |0 |2 |23.656260 |85.564114
+|14 |Karnataka |315 |82 |13 |14.710270 |76.167417
+|15 |Kerala |388 |218 |3 |10.450679 |76.408495
+|16 |Ladakh |17 |10 |0 |34.923500 |76.428171
+|17 |Madhya Pradesh |1120 |64 |53 |23.538195 |78.289033
+|18 |Maharashtra |2919 |295 |187 |19.451456 |76.107683
+|19 |Manipur |2 |1 |0 |24.734961 |93.878657
+|20 |Meghalaya |7 |0 |1 |25.545394 |91.214580
+|21 |Mizoram |1 |0 |0 |23.307713 |92.831758
+|22 |Odisha |60 |18 |1 |20.513904 |84.430313
+|23 |Puducherry |7 |1 |0 |11.915508 |79.767171
+|24 |Punjab |186 |27 |13 |30.842485 |75.415377
+|25 |Rajasthan |1023 |147 |3 |26.584438 |73.849731
+|26 |Tamil Nadu |1242 |118 |14 |11.014491 |78.410706
+|27 |Telengana |698 |120 |18 |17.800787 |79.008413
+|28 |Tripura |2 |1 |0 |23.744936 |91.739194
+|29 |Uttarakhand |37 |9 |0 |26.923309 |80.566161
+|30 |Uttar Pradesh |773 |68 |13 |30.156503 |79.206705
+|31 |West Bengal |231 |42 |7 |23.147581 |87.846931
+|===============================================================
+----
+
+=== 4) Installing and importing folium library
+
+
++*In[4]:*+
+[source, ipython3]
+----
+!conda install -c conda-forge folium=0.5.0 --yes
+import folium
+
+print('Folium installed and imported!')
+----
+
+
++*Out[4]:*+
+----
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+# All requested packages already installed.
+
+Folium installed and imported!
+----
+
+=== 5 ) Locating India
+
+
++*In[19]:*+
+[source, ipython3]
+----
+india=folium.Map(location=[20.5937,78.9629],zoom_start=5)
+india
+----
+
+
++*Out[19]:*+
+----
+Make this Notebook Trusted to load map: File -> Trust Notebook
+----
+
+
++*In[35]:*+
+[source, ipython3]
+----
+loc=[20.5937,78.9629]
+india=folium.Map(location=loc,tiles='Stamen terrain',zoom_start=5)
+india
+----
+
+
++*Out[35]:*+
+----
+Make this Notebook Trusted to load map: File -> Trust Notebook
+----
+
+== 6) Marking Death counts in each state
+
+
++*In[44]:*+
+[source, ipython3]
+----
+deaths=folium.map.FeatureGroup()
+
+for lat,long in zip(C_India.Lat,C_India.Long):
+    deaths.add_child(folium.features.CircleMarker([lat,long],radius=5,color='red',fill=True,fill_color='purple',fill_opacity=0.6))
+    
+# adding markers on the map
+india.add_child(deaths)
+----
+
+
++*Out[44]:*+
+----
+Make this Notebook Trusted to load map: File -> Trust Notebook
+----
+
+=== Converting TCC to String
+
+
++*In[65]:*+
+[source, ipython3]
+----
+C_India[['TCC']].astype(str)
+
+----
+
+
++*Out[65]:*+
+----
+[cols=",",options="header",]
+|========
+| |TCC
+|0 |11
+|1 |534
+|2 |1
+|3 |33
+|4 |74
+|5 |21
+|6 |33
+|7 |1578
+|8 |7
+|9 |871
+|10 |205
+|11 |35
+|12 |300
+|13 |28
+|14 |315
+|15 |388
+|16 |17
+|17 |1120
+|18 |2919
+|19 |2
+|20 |7
+|21 |1
+|22 |60
+|23 |7
+|24 |186
+|25 |1023
+|26 |1242
+|27 |698
+|28 |2
+|29 |37
+|30 |773
+|31 |231
+|========
+----
+
+= Marking Labels For Total Corona Cases
+
+
++*In[71]:*+
+[source, ipython3]
+----
+total_cases = folium.map.FeatureGroup()
+
+for lat, lng, in zip(C_India.Lat, C_India.Long):
+    total_cases.add_child(
+        folium.features.CircleMarker(
+            [lat, lng],
+            radius=5,
+            color='yellow',
+            fill=True,
+            fill_color='blue',
+            fill_opacity=0.6
+        )
+    )
+
+# add pop-up text to each marker on the map
+latitudes = list(C_India.Lat)
+longitudes = list(C_India.Long)
+labels=list(C_India.TCC.astype(str))
+for lat, lng, lab in zip(latitudes, longitudes, labels):
+    folium.Marker([lat, lng], popup=lab).add_to(india)    
+    
+india.add_child(total_cases)        
+----
+
+
++*Out[71]:*+
+----
+Make this Notebook Trusted to load map: File -> Trust Notebook
+----
+
+= Marking Labels For total Number of Deaths in Each State
+
+
++*In[72]:*+
+[source, ipython3]
+----
+death_count = folium.map.FeatureGroup()
+
+for lat, lng, in zip(C_India.Lat, C_India.Long):
+    death_count.add_child(
+        folium.features.CircleMarker(
+            [lat, lng],
+            radius=5, 
+            color='red',
+            fill=True,
+            fill_color='blue',
+            fill_opacity=0.6
+        )
+    )
+
+latitudes = list(C_India.Lat)
+longitudes = list(C_India.Long)
+labels=list(C_India.Death.astype(str))
+for lat, lng, lab in zip(latitudes, longitudes, labels):
+    folium.Marker([lat, lng], popup=lab).add_to(india)    
+    
+india.add_child(death_count)
+----
+
+
++*Out[72]:*+
+----
+Make this Notebook Trusted to load map: File -> Trust Notebook
+----
+
+== Labels For Cured Cases
+
+
++*In[80]:*+
+[source, ipython3]
+----
+cured = folium.map.FeatureGroup()
+
+for lat, lng, in zip(C_India.Lat, C_India.Long):
+    cured.add_child(
+        folium.features.CircleMarker(
+            [lat, lng],
+            radius=5, 
+            color='green',
+            fill=True,
+            fill_color='white',
+            fill_opacity=0.6
+        )
+    )
+
+latitudes = list(C_India.Lat)
+longitudes = list(C_India.Long)
+labels=list(C_India.Cured.astype(str))
+for lat, lng, lab in zip(latitudes, longitudes, labels):
+    folium.Marker([lat, lng], popup=lab).add_to(india)    
+    
+india.add_child(cured)
+----
+
+
++*Out[80]:*+
+----
+Make this Notebook Trusted to load map: File -> Trust Notebook
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
